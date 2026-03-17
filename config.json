@@ -1,0 +1,75 @@
+{
+  "listen_addr": ":8080",
+  "auth": {
+    "enabled": true,
+    "users": {
+      "admin": "admin123",
+      "developer": "dev_pass",
+      "readonly": "read_only_pass"
+    },
+    "api_tokens": {
+      "sk-live-abc123": "admin",
+      "sk-test-xyz789": "developer"
+    }
+  },
+  "rules": {
+    "allowed_targets": [],
+    "blocked_targets": [
+      "localhost",
+      "127.0.0.1",
+      "::1",
+      "10.0.0.0/8",
+      "172.16.0.0/12",
+      "192.168.0.0/16"
+    ],
+    "user_rules": {
+      "admin": {
+        "allowed_targets": [],
+        "blocked_targets": [],
+        "rate_limit": {
+          "requests_per_second": 100,
+          "burst_size": 200,
+          "daily_limit": 0
+        }
+      },
+      "developer": {
+        "allowed_targets": [
+          "*.github.com",
+          "*.google.com",
+          "*.stackoverflow.com",
+          "api.openai.com",
+          "api.anthropic.com"
+        ],
+        "blocked_targets": [
+          "internal.company.com",
+          "*.internal"
+        ],
+        "rate_limit": {
+          "requests_per_second": 10,
+          "burst_size": 20,
+          "daily_limit": 10000
+        }
+      },
+      "readonly": {
+        "allowed_targets": [
+          "*.wikipedia.org",
+          "*.stackoverflow.com",
+          "docs.python.org"
+        ],
+        "blocked_targets": [
+          "*"
+        ],
+        "rate_limit": {
+          "requests_per_second": 2,
+          "burst_size": 5,
+          "daily_limit": 500
+        }
+      }
+    }
+  },
+  "logging": {
+    "enabled": true,
+    "format": "json",
+    "file_path": ""
+  }
+}
