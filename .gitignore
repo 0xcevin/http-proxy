@@ -1,0 +1,16 @@
+.DS_Store
+*.exe
+*.dll
+*.so
+*.dylib
+http-proxy
+dist/
+*.log
+coverage.out
+*.test
+*.out
+.idea/
+.vscode/
+*.swp
+*.swo
+*~

@@ -2,12 +2,14 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"log"
 	"net"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -92,8 +94,25 @@ type AccessLog struct {
 }
 
 func main() {
+	// 解析命令行参数
+	configPath := flag.String("config", "", "Path to config file")
+	flag.Parse()
+
 	// 加载配置
-	config := loadConfig()
+	var config *Config
+	var err error
+
+	if *configPath != "" {
+		config, err = LoadConfigFromFile(*configPath)
+		if err != nil {
+			log.Printf("Failed to load config from %s: %v, using default config", *configPath, err)
+			config = loadDefaultConfig()
+		} else {
+			log.Printf("Loaded config from %s", *configPath)
+		}
+	} else {
+		config = loadDefaultConfig()
+	}
 
 	// 创建代理服务器
 	server := NewProxyServer(config)
@@ -510,8 +529,8 @@ func matchHost(host, pattern string) bool {
 	return strings.Contains(host, pattern)
 }
 
-// 加载配置
-func loadConfig() *Config {
+// 加载默认配置
+func loadDefaultConfig() *Config {
 	// 默认配置
 	config := &Config{
 		ListenAddr: ":8080",

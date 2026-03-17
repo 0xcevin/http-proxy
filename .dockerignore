@@ -1,0 +1,24 @@
+# http-proxy
+
+http-proxy
+
+# Test files
+*.test
+*.out
+coverage.out
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+
+# Build artifacts
+dist/
+*.exe
+*.dll
+*.so
+*.dylib
