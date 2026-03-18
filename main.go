@@ -9,7 +9,6 @@ import (
 	"net"
 	"net/http"
 	"net/url"
-	"os"
 	"strings"
 	"sync"
 	"time"
@@ -150,10 +149,9 @@ func (s *ProxyServer) handleRequest(w http.ResponseWriter, r *http.Request) {
 	clientIP := getClientIP(r)
 	
 	accessLog := &AccessLog{
-		Timestamp:  time.Now().Format(time.RFC3339),
-		ClientIP:   clientIP,
-		Method:     r.Method,
-		ClientPort: r.URL.Port(),
+		Timestamp: time.Now().Format(time.RFC3339),
+		ClientIP:  clientIP,
+		Method:    r.Method,
 	}
 
 	// 1. 认证
