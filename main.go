@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -216,7 +217,14 @@ func (s *ProxyServer) authenticate(r *http.Request) (string, bool) {
 		return "anonymous", true
 	}
 
-	// 检查 Basic Auth
+	// 代理场景下 curl/客户端会发 Proxy-Authorization，先检查该头
+	if user, pass, ok := parseProxyBasicAuth(r.Header.Get("Proxy-Authorization")); ok {
+		if expectedPass, exists := s.config.Auth.Users[user]; exists && expectedPass == pass {
+			return user, true
+		}
+	}
+
+	// 再检查 Authorization（兼容非代理或自定义客户端）
 	user, pass, ok := r.BasicAuth()
 	if ok {
 		if expectedPass, exists := s.config.Auth.Users[user]; exists && expectedPass == pass {
@@ -233,6 +241,26 @@ func (s *ProxyServer) authenticate(r *http.Request) (string, bool) {
 	}
 
 	return "", false
+}
+
+// parseProxyBasicAuth 解析 "Proxy-Authorization: Basic <base64>" 得到 user, pass
+func parseProxyBasicAuth(proxyAuth string) (user, pass string, ok bool) {
+	if proxyAuth == "" {
+		return "", "", false
+	}
+	const prefix = "Basic "
+	if !strings.HasPrefix(proxyAuth, prefix) {
+		return "", "", false
+	}
+	decoded, err := base64.StdEncoding.DecodeString(proxyAuth[len(prefix):])
+	if err != nil {
+		return "", "", false
+	}
+	parts := strings.SplitN(string(decoded), ":", 2)
+	if len(parts) != 2 {
+		return "", "", false
+	}
+	return parts[0], parts[1], true
 }
 
 // 解析目标地址

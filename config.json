@@ -14,20 +14,13 @@
   },
   "rules": {
     "allowed_targets": [],
-    "blocked_targets": [
-      "localhost",
-      "127.0.0.1",
-      "::1",
-      "10.0.0.0/8",
-      "172.16.0.0/12",
-      "192.168.0.0/16"
-    ],
+    "blocked_targets": ["localhost", "127.0.0.1", "::1"],
     "user_rules": {
       "admin": {
-        "allowed_targets": [],
+        "allowed_targets": ["*.github.com", "*.weibo.com", "*.sina.com"],
         "blocked_targets": [],
         "rate_limit": {
-          "requests_per_second": 100,
+          "requests_per_second": 50,
           "burst_size": 200,
           "daily_limit": 0
         }
@@ -40,10 +33,7 @@
           "api.openai.com",
           "api.anthropic.com"
         ],
-        "blocked_targets": [
-          "internal.company.com",
-          "*.internal"
-        ],
+        "blocked_targets": ["internal.company.com", "*.internal"],
         "rate_limit": {
           "requests_per_second": 10,
           "burst_size": 20,
@@ -56,9 +46,7 @@
           "*.stackoverflow.com",
           "docs.python.org"
         ],
-        "blocked_targets": [
-          "*"
-        ],
+        "blocked_targets": ["*"],
         "rate_limit": {
           "requests_per_second": 2,
           "burst_size": 5,
